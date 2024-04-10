@@ -149,13 +149,11 @@ app.get('/companies', async (req, res) => {
     }
 });
 
-
 app.get('/', (req, res) => {
     res.send('Welcome to the cryptocurrency price API!');
 });
 
 const PORT = process.env.PORT || 4000;
-
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
