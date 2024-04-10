@@ -5,7 +5,7 @@ async function testTask1() {
     try {
         const response = await axios.get('http://localhost:4000/');
         console.log('Task 1 Response:', response.data);
-        
+
         testTask2();
     } catch (error) {
         console.error('Error testing Task 1:', error.message);
@@ -21,10 +21,10 @@ async function testTask2() {
             date: '12-01-2023',
         };
 
-        console.log('Task 2 Request Body:', requestBody); 
+        console.log('Task 2 Request Body:', requestBody);
         const response = await axios.post('http://localhost:4000/simple/prices', requestBody);
         console.log('Task 2 Response:', response.data);
-   
+
         testTask3();
     } catch (error) {
         console.error('Error testing Task 2:', error.message);

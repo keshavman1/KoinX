@@ -21,9 +21,9 @@ const cryptoSchema = new mongoose.Schema({
 const Crypto = mongoose.model('Crypto', cryptoSchema);
 
 mongoose.connect(mongoURI, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    })
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+})
     .then(() => {
         console.log('Connected to MongoDB database');
     })
@@ -49,8 +49,8 @@ async function fetchCryptoData() {
             volume: crypto.total_volume,
         }));
 
-        await Crypto.deleteMany({}); 
-        await Crypto.insertMany(cryptoData); 
+        await Crypto.deleteMany({});
+        await Crypto.insertMany(cryptoData);
         console.log('Cryptocurrency data saved to MongoDB.');
     } catch (error) {
         throw new Error('Error fetching cryptocurrency data from Coingecko API');
@@ -72,25 +72,25 @@ app.post('/simple/prices', async (req, res) => {
     try {
         const { fromCurrency, toCurrency, date } = req.body;
 
-      
+
         const currentPriceResponse = await axios.get(`https://api.coingecko.com/api/v3/simple/price?ids=${fromCurrency}&vs_currencies=${toCurrency}`);
         const currentPrice = currentPriceResponse.data[fromCurrency][toCurrency];
 
-     
+
         const formattedDate = formatDate(date);
         const historicalPriceFromCurrencyResponse = await axios.get(`https://api.coingecko.com/api/v3/coins/${fromCurrency}/history?date=${formattedDate}`);
         const historicalPriceToCurrencyResponse = await axios.get(`https://api.coingecko.com/api/v3/coins/${toCurrency}/history?date=${formattedDate}`);
         const historicalPriceFromCurrency = historicalPriceFromCurrencyResponse.data.market_data.current_price.usd;
         const historicalPriceToCurrency = historicalPriceToCurrencyResponse.data.market_data.current_price.usd;
 
-       
+
         const calculatedPrice = historicalPriceFromCurrency / historicalPriceToCurrency;
 
-        res.json({ 
+        res.json({
             currentPrice: currentPrice,
             historicalPriceFromCurrency: historicalPriceFromCurrency,
             historicalPriceToCurrency: historicalPriceToCurrency,
-            calculatedPrice: calculatedPrice 
+            calculatedPrice: calculatedPrice
         });
     } catch (error) {
         console.error('Error:', error.message);
@@ -111,16 +111,16 @@ app.get('/companies', async (req, res) => {
     try {
         const { currency } = req.query;
 
-     
+
         if (!['bitcoin', 'ethereum'].includes(currency)) {
             return res.status(400).json({ error: 'Invalid currency parameter. Only bitcoin or ethereum are allowed.' });
         }
 
-     
+
         const response = await axios.get(`https://api.coingecko.com/api/v3/companies/public_treasury/${currency}`);
         const companies = response.data.companies;
 
-     
+
         const formattedResponse = `Companies holding ${currency}:\n` +
             `Total Holdings: ${response.data.total_holdings}\n` +
             `Total Value (USD): ${response.data.total_value_usd}\n` +
